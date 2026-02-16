@@ -8,8 +8,8 @@ const EXAMPLE_SCRIPT = "Keluhan utama pasien datang dengan batuk pilek sejak 3 h
 const SOAPSection = ({ title, value, onChange, isActive, onFocus }) => (
     <div
         className={`p-4 rounded-xl border transition-all duration-300 ${isActive
-                ? 'bg-white border-medical-blue ring-2 ring-medical-blue/20 shadow-sm'
-                : 'bg-slate-50 border-slate-200 hover:border-slate-300'
+            ? 'bg-white border-medical-blue ring-2 ring-medical-blue/20 shadow-sm'
+            : 'bg-slate-50 border-slate-200 hover:border-slate-300'
             }`}
         onClick={onFocus}
     >
@@ -105,8 +105,8 @@ const SOAPEditor = () => {
                             onClick={handleProcessAI}
                             disabled={!rawText}
                             className={`flex items-center gap-2 px-6 py-3 rounded-full font-bold transition-all shadow-md transform hover:-translate-y-0.5 ${!rawText
-                                    ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
-                                    : 'bg-indigo-600 text-white hover:bg-indigo-700 hover:shadow-indigo-500/30'
+                                ? 'bg-slate-200 text-slate-400 cursor-not-allowed'
+                                : 'bg-indigo-600 text-white hover:bg-indigo-700 hover:shadow-indigo-500/30'
                                 }`}
                         >
                             <Sparkles size={18} /> Proses AI
@@ -165,3 +165,5 @@ const SOAPEditor = () => {
         </div>
     );
 };
+
+export default SOAPEditor;
