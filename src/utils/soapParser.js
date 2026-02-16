@@ -22,6 +22,21 @@ export const parseTranscript = (text, currentSection) => {
     return { action: 'APPEND', text };
 };
 
+const STOP_WORDS = new Set([
+    'yang', 'dan', 'di', 'ke', 'dari', 'ini', 'itu', 'pada', 'untuk', 'adalah',
+    'sebagai', 'dengan', 'dalam', 'atas', 'karena', 'jika', 'namun', 'tetapi',
+    'atau', 'pun', 'juga', 'sudah', 'telah', 'sedang', 'akan', 'bisa', 'dapat',
+    'harus', 'oleh', 'serta', 'lalu', 'kemudian', 'saat', 'ketika', 'sehingga',
+    'agar', 'supaya', 'seperti', 'tersebut', 'apakah', 'bagaimana'
+]);
+
+const cleanText = (text) => {
+    return text
+        .split(' ')
+        .filter(word => !STOP_WORDS.has(word.toLowerCase().replace(/[:.,]/g, '')))
+        .join(' ');
+};
+
 export const parseFullTranscript = (text) => {
     const result = {
         subjective: '',
@@ -31,50 +46,24 @@ export const parseFullTranscript = (text) => {
     };
 
     const lowerText = text.toLowerCase();
-
-    // Find indices of keywords
-    // We look for the first occurrence of any keyword group
-    const findIndex = (keywordGroups) => {
-        let index = -1;
-        let matchLength = 0;
-
-        for (const keywords of keywordGroups) {
-            for (const k of keywords) {
-                const idx = lowerText.indexOf(k);
-                // We want the earliest occurrence that hasn't been found before? 
-                // Actually, simple REGEX approach might be better for "Split by delimiter"
-            }
-        }
-    };
-
-    // Simpler Regex Approach: Split the text by known headers
-    // 1. Normalize text
-    // 2. We need to identify sections. 
-    // Let's iterate through the text and see which section we are in.
-
-    let currentSection = 'subjective'; // Default start
-
-    // We will split by words and check triggers
-    // This is a naive but effective parser for the "Demo"
-
-    const words = text.split(' ');
+    const words = text.split(/\s+/);
     let buffer = [];
+    let currentSection = 'subjective';
 
     words.forEach(word => {
-        const lowerWord = word.toLowerCase().replace(/[:.,]/g, ''); // strip punctuation for check
-
+        const cleanWord = word.toLowerCase().replace(/[:.,]/g, '');
         let newSection = null;
 
-        // Check if this word triggers a section switch
-        if (COMMANDS.subjective.includes(lowerWord)) newSection = 'subjective';
-        else if (COMMANDS.objective.includes(lowerWord)) newSection = 'objective';
-        else if (COMMANDS.assessment.includes(lowerWord)) newSection = 'assessment';
-        else if (COMMANDS.plan.includes(lowerWord)) newSection = 'plan';
+        if (COMMANDS.subjective.includes(cleanWord)) newSection = 'subjective';
+        else if (COMMANDS.objective.includes(cleanWord)) newSection = 'objective';
+        else if (COMMANDS.assessment.includes(cleanWord)) newSection = 'assessment';
+        else if (COMMANDS.plan.includes(cleanWord)) newSection = 'plan';
 
         if (newSection) {
-            // Dump buffer to current section
             if (buffer.length > 0) {
-                result[currentSection] += (result[currentSection] ? ' ' : '') + buffer.join(' ');
+                const sectionText = buffer.join(' ');
+                // Append cleaned text
+                result[currentSection] += (result[currentSection] ? ' ' : '') + cleanText(sectionText);
                 buffer = [];
             }
             currentSection = newSection;
@@ -83,12 +72,11 @@ export const parseFullTranscript = (text) => {
         }
     });
 
-    // Dump remaining
+    // Dump remaining buffer
     if (buffer.length > 0) {
-        result[currentSection] += (result[currentSection] ? ' ' : '') + buffer.join(' ');
+        const sectionText = buffer.join(' ');
+        result[currentSection] += (result[currentSection] ? ' ' : '') + cleanText(sectionText);
     }
 
     return result;
 };
-
-

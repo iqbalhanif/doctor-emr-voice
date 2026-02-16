@@ -18,16 +18,17 @@ A specialized speech-to-text application for Indonesian doctors to structure med
 
 ## How to Use
 
-### 1. Dikte (Raw Mode)
-Click **Mulai Rekam** and narrate the entire consultation naturally.
-- Use keywords to start sections: **"Subjektif..."**, **"Objektif..."**, etc.
-- *Example*: "Keluhan utama demam. Objektif suhu 39. Plan paracetamol."
+### 1. Rekam & Proses
+- Klik tombol **Mulai Rekam**.
+- Ucapkan hasil pemeriksaan secara natural.
+  - *Sebutkan "Subjektif", "Objektif", "Assessment", "Plan" untuk memisahkan bagian.*
+- Teks akan muncul secara **real-time**.
+- Klik tombol **Stop & Proses AI** saat selesai.
+- *AI akan otomatis membersihkan kata sambung (yang, dan, dll) dan menyusun format SOAP.*
 
-### 2. Process AI
-Click **Proses AI** to automatically split the raw transcript into the SOAP fields.
-
-### 3. Review & Edit
-Review the structured data in the SOAP boxes. You can edit them manually if needed.
+### 2. Review Hasil
+- Periksa kolom S-O-A-P yang sudah terisi rapi.
+- Edit jika diperlukan, lalu klik **Simpan ke EMR**.
 
 ## Project Structure
 - `src/hooks/useSpeechRecognition.js`: Handles microphone input and Indonesian configuration.
