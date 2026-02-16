@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 
-export const useSpeechRecognition = () => {
+export const useSpeechRecognition = (language = 'id-ID') => {
     const [isListening, setIsListening] = useState(false);
     const [transcript, setTranscript] = useState('');
     const [error, setError] = useState(null);
@@ -16,7 +16,7 @@ export const useSpeechRecognition = () => {
         const recognition = new SpeechRecognition();
         recognition.continuous = true;
         recognition.interimResults = true;
-        recognition.lang = 'id-ID'; // Indonesian
+        recognition.lang = language;
 
         recognition.onstart = () => setIsListening(true);
         recognition.onend = () => setIsListening(false);
@@ -44,7 +44,7 @@ export const useSpeechRecognition = () => {
         };
 
         recognitionRef.current = recognition;
-    }, []);
+    }, [language]);
 
     const startListening = useCallback(() => {
         setError(null);

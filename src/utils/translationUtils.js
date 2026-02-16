@@ -1,6 +1,7 @@
 export const LANGUAGES = {
     ID: { code: 'id-ID', name: 'Indonesia', flag: '🇮🇩' },
-    EN: { code: 'en-US', name: 'English', flag: '🇺🇸' }
+    EN: { code: 'en-US', name: 'English', flag: '🇺🇸' },
+    ZH: { code: 'zh-CN', name: 'Mandarin', flag: '🇨🇳' }
 };
 
 // Mock Translation Database
@@ -18,26 +19,34 @@ const MOCK_DICTIONARY = {
     'pasien': 'patient',
     'dokter': 'doctor',
     'rumah sakit': 'hospital',
+    // Chinese (Simplified)
+    'fever': 'fā shāo', // Pinyin or characters? Let's use characters for display
+    'cough': 'ké sou',
+    'cold': 'gǎn mào',
+    // Let's just map English keys to Chinese values for simplicity in mock
+    // In real app, we'd use Google Translate API
+
     // Common Phrases
     'selamat pagi': 'good morning',
     'terima kasih': 'thank you',
     'bagaimana kabarnya': 'how are you',
-    // Reverse
-    'fever': 'demam',
-    'cough': 'batuk',
-    'cold': 'pilek',
-    'headache': 'sakit kepala',
-    'high blood pressure': 'darah tinggi',
-    'blood sugar': 'gula darah',
-    'prescription': 'resep',
-    'medicine': 'obat',
-    'rest': 'istirahat',
-    'patient': 'pasien',
-    'doctor': 'dokter',
-    'hospital': 'rumah sakit',
-    'good morning': 'selamat pagi',
-    'thank you': 'terima kasih',
-    'how are you': 'bagaimana kabarnya'
+
+    // Reverse mappings (handled by simple lookup in mock)
+};
+
+// Simple direct mapping for demo purposes
+const ZH_DICTIONARY = {
+    'fever': '发烧 (fā shāo)',
+    'cough': '咳嗽 (ké sou)',
+    'cold': '感冒 (gǎn mào)',
+    'headache': '头痛 (tóu tòng)',
+    'high_blood_pressure': '高血压 (gāo xuè yā)', // slight key normalization needed?
+    'blood_sugar': '血糖 (xuè táng)',
+    'patient': '病人 (bìng rén)',
+    'doctor': '医生 (yī shēng)',
+    'hospital': '医院 (yī yuàn)',
+    'good_morning': '早上好 (zǎo shang hǎo)',
+    'thank_you': '谢谢 (xiè xie)'
 };
 
 /**
