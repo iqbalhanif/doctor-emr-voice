@@ -1,7 +1,7 @@
 import React from 'react';
-import { Stethoscope, Mic, FileText, Settings, User } from 'lucide-react';
+import { Stethoscope, Mic, FileText, Settings, User, Languages } from 'lucide-react';
 
-const Sidebar = () => {
+const Sidebar = ({ activeTab, onTabChange }) => {
     return (
         <aside className="w-20 lg:w-64 bg-slate-900 text-white flex flex-col h-screen fixed left-0 top-0 z-20 transition-all duration-300">
             <div className="p-6 flex items-center justify-center lg:justify-start gap-3 border-b border-slate-700">
@@ -12,8 +12,18 @@ const Sidebar = () => {
             </div>
 
             <nav className="flex-1 py-6 px-3 space-y-2">
-                <NavItem icon={<FileText />} label="Rekam Medis" active />
-                <NavItem icon={<Mic />} label="Dikte Cepat" />
+                <NavItem
+                    icon={<FileText />}
+                    label="Rekam Medis"
+                    active={activeTab === 'emr'}
+                    onClick={() => onTabChange('emr')}
+                />
+                <NavItem
+                    icon={<Languages />}
+                    label="AI Translator"
+                    active={activeTab === 'translator'}
+                    onClick={() => onTabChange('translator')}
+                />
                 <NavItem icon={<User />} label="Pasien" />
                 <NavItem icon={<Settings />} label="Pengaturan" />
             </nav>
@@ -33,11 +43,12 @@ const Sidebar = () => {
     );
 };
 
-const NavItem = ({ icon, label, active }) => (
+const NavItem = ({ icon, label, active, onClick }) => (
     <button
+        onClick={onClick}
         className={`w-full flex items-center gap-3 p-3 rounded-lg transition-colors ${active
-                ? 'bg-medical-blue text-white shadow-lg shadow-blue-900/20'
-                : 'text-slate-400 hover:bg-slate-800 hover:text-slate-100'
+            ? 'bg-medical-blue text-white shadow-lg shadow-blue-900/20'
+            : 'text-slate-400 hover:bg-slate-800 hover:text-slate-100'
             }`}
     >
         <span className="shrink-0">{icon}</span>
