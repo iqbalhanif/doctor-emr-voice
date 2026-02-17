@@ -106,7 +106,18 @@ const Translator = () => {
                     <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
                         <Languages className="text-medical-blue" /> AI Medical Translator
                     </h1>
-                    <p className="text-slate-500">Terjemahan suara instan dokter-pasien.</p>
+                    <div className="flex items-center gap-2 text-sm">
+                        <span className="text-slate-500">Terjemahan suara instan.</span>
+                        {apiKey ? (
+                            <span className="px-2 py-0.5 rounded-full bg-green-100 text-green-700 font-bold text-xs flex items-center gap-1">
+                                <Sparkles size={10} /> GEMINI AI ACTIVE
+                            </span>
+                        ) : (
+                            <span className="px-2 py-0.5 rounded-full bg-slate-100 text-slate-500 font-bold text-xs border border-slate-200">
+                                OFFLINE MODE
+                            </span>
+                        )}
+                    </div>
                 </div>
                 <button
                     onClick={() => setShowSettings(!showSettings)}
