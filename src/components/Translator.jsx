@@ -22,7 +22,13 @@ const Translator = () => {
     // Load API Key on Mount
     useEffect(() => {
         const storedKey = localStorage.getItem('GEMINI_API_KEY');
-        if (storedKey) setApiKey(storedKey);
+        if (storedKey) {
+            setApiKey(storedKey);
+        } else {
+            // Default Demo Key (Provided by User)
+            const demoKey = 'AIzaSyDwezBG7kOK9vZJGzoONJsfW5RMmxkbyR0';
+            setApiKey(demoKey);
+        }
     }, []);
 
     const saveApiKey = (key) => {
@@ -154,7 +160,7 @@ const Translator = () => {
                         </button>
                     </div>
                     <div className="mt-2 text-xs text-slate-400">
-                        Belum punya key? <a href="https://aistudio.google.com/" target="_blank" rel="noreferrer" className="text-indigo-500 underline">Dapatkan Gratis di sini</a>
+                        Belum punya key? <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noreferrer" className="text-indigo-500 underline font-bold">Dapatkan Gratis di sini</a>
                     </div>
                 </div>
             )}
