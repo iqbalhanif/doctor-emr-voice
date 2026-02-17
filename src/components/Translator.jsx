@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Languages, ArrowRightLeft, Volume2, Sparkles, Copy, Check, Mic, Trash2 } from 'lucide-react';
+import { Languages, ArrowRightLeft, Volume2, Sparkles, Copy, Check, Mic, Trash2, Settings } from 'lucide-react';
 import { LANGUAGES, mockTranslate, speakText } from '../utils/translationUtils';
 import { useSpeechRecognition } from '../hooks/useSpeechRecognition';
+import { translateWithGemini } from '../services/aiService';
 
 const Translator = () => {
     const [sourceLang, setSourceLang] = useState('ID');
@@ -13,6 +14,22 @@ const Translator = () => {
     const [outputText, setOutputText] = useState('');
     const [isTranslating, setIsTranslating] = useState(false);
     const [copied, setCopied] = useState(false);
+
+    // AI Settings State
+    const [apiKey, setApiKey] = useState('');
+    const [showSettings, setShowSettings] = useState(false);
+
+    // Load API Key on Mount
+    useEffect(() => {
+        const storedKey = localStorage.getItem('GEMINI_API_KEY');
+        if (storedKey) setApiKey(storedKey);
+    }, []);
+
+    const saveApiKey = (key) => {
+        setApiKey(key);
+        localStorage.setItem('GEMINI_API_KEY', key);
+        setShowSettings(false);
+    };
 
     // Voice Input Hook
     const { isListening, transcript, startListening, stopListening, resetTranscript, error } = useSpeechRecognition(LANGUAGES[sourceLang].code);
@@ -37,10 +54,23 @@ const Translator = () => {
 
         setIsTranslating(true);
         try {
-            const result = await mockTranslate(inputText, LANGUAGES[targetLang].code);
+            let result;
+            if (apiKey) {
+                // Real AI Translation
+                result = await translateWithGemini(
+                    inputText,
+                    LANGUAGES[sourceLang].name,
+                    LANGUAGES[targetLang].name,
+                    apiKey
+                );
+            } else {
+                // Fallback to Mock
+                result = await mockTranslate(inputText, LANGUAGES[targetLang].code);
+            }
             setOutputText(result);
         } catch (error) {
             console.error("Translation error", error);
+            alert(`Error: ${error.message}`);
         } finally {
             setIsTranslating(false);
         }
@@ -71,12 +101,52 @@ const Translator = () => {
     return (
         <div className="max-w-4xl mx-auto pb-20">
             {/* Header */}
-            <div className="mb-8">
-                <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
-                    <Languages className="text-medical-blue" /> AI Medical Translator
-                </h1>
-                <p className="text-slate-500">Terjemahan suara instan untuk komunikasi dokter-pasien.</p>
+            <div className="flex justify-between items-center mb-8">
+                <div>
+                    <h1 className="text-2xl font-bold text-slate-900 flex items-center gap-2">
+                        <Languages className="text-medical-blue" /> AI Medical Translator
+                    </h1>
+                    <p className="text-slate-500">Terjemahan suara instan dokter-pasien.</p>
+                </div>
+                <button
+                    onClick={() => setShowSettings(!showSettings)}
+                    className={`p-2 rounded-lg transition-colors ${apiKey ? 'text-green-600 bg-green-50' : 'text-slate-400 hover:bg-slate-100'}`}
+                    title="AI Settings"
+                >
+                    <Settings size={24} />
+                </button>
             </div>
+
+            {/* API Key Modal */}
+            {showSettings && (
+                <div className="mb-6 bg-white p-4 rounded-xl border border-indigo-100 shadow-sm animate-in fade-in slide-in-from-top-4">
+                    <h3 className="font-bold text-slate-700 mb-2 flex items-center gap-2">
+                        <Sparkles size={16} className="text-indigo-500" /> AI Configuration (Gemini)
+                    </h3>
+                    <p className="text-xs text-slate-500 mb-3">
+                        Masukan API Key Google Gemini untuk hasil terjemahan yang lebih akurat dan cerdas.
+                        Jika kosong, aplikasi akan menggunakan mode "Mock" (kamus sederhana).
+                    </p>
+                    <div className="flex gap-2">
+                        <input
+                            type="password"
+                            placeholder="Paste Gemini API Key here..."
+                            className="flex-1 px-4 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 outline-none"
+                            defaultValue={apiKey}
+                            onChange={(e) => setApiKey(e.target.value)}
+                        />
+                        <button
+                            onClick={() => saveApiKey(apiKey)}
+                            className="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm font-bold hover:bg-indigo-700"
+                        >
+                            Save
+                        </button>
+                    </div>
+                    <div className="mt-2 text-xs text-slate-400">
+                        Belum punya key? <a href="https://aistudio.google.com/" target="_blank" rel="noreferrer" className="text-indigo-500 underline">Dapatkan Gratis di sini</a>
+                    </div>
+                </div>
+            )}
 
             <div className="flex flex-col gap-6">
                 {/* Language Controls */}
