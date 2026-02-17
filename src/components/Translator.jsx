@@ -125,18 +125,20 @@ const Translator = () => {
                     <div className="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 flex flex-col h-[400px]">
                         <div className="flex justify-between items-start mb-2">
                             <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Input</span>
-                            {inputText && (
-                                <button
-                                    onClick={() => {
-                                        setInputText('');
-                                        setOutputText('');
-                                    }}
-                                    className="text-slate-400 hover:text-red-500 transition-colors p-1"
-                                    title="Hapus Input"
-                                >
-                                    <Trash2 size={16} />
-                                </button>
-                            )}
+                            <button
+                                onClick={() => {
+                                    setInputText('');
+                                    setOutputText('');
+                                }}
+                                disabled={!inputText}
+                                className={`transition-colors p-1 ${inputText
+                                    ? 'text-slate-400 hover:text-red-500 cursor-pointer'
+                                    : 'text-slate-200 cursor-not-allowed'
+                                    }`}
+                                title="Hapus Input"
+                            >
+                                <Trash2 size={16} />
+                            </button>
                         </div>
                         <textarea
                             className="flex-1 w-full bg-transparent border-none resize-none focus:ring-0 text-xl text-slate-700 placeholder:text-slate-300 mb-6"
