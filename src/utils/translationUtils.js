@@ -170,8 +170,11 @@ export const speakText = (text, langCode) => {
         return;
     }
 
-    const utterance = new SpeechSynthesisUtterance(text);
+    // Strip parenthetical text (like Pinyin) for cleaner speech
+    const cleanText = text.replace(/\s*\([^)]*\)/g, '');
+
+    const utterance = new SpeechSynthesisUtterance(cleanText);
     utterance.lang = langCode;
-    utterance.rate = 0.9; // Slightly slower for clarity
+    utterance.rate = 0.9;
     window.speechSynthesis.speak(utterance);
 };
