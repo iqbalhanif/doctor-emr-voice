@@ -5,6 +5,9 @@ import { useSpeechRecognition } from '../hooks/useSpeechRecognition';
 
 const Translator = () => {
     const [sourceLang, setSourceLang] = useState('ID');
+
+    // Debugging version
+    console.log("Translator Component Loaded - Version: v2-fix-import");
     const [targetLang, setTargetLang] = useState('EN');
     const [inputText, setInputText] = useState('');
     const [outputText, setOutputText] = useState('');
