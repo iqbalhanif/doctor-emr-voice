@@ -5,6 +5,7 @@
  */
 
 const MYMEMORY_API_URL = 'https://api.mymemory.translated.net/get';
+const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
 
 // Language code mapping (MyMemory uses ISO 639-1 codes)
 const LANG_MAP = {
@@ -25,11 +26,12 @@ export const translateWithMyMemory = async (text, sourceLang, targetLang) => {
             langpair: `${sourceLangCode}|${targetLangCode}`
         });
 
-        const response = await fetch(`${MYMEMORY_API_URL}?${params}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            }
+        // Use CORS proxy to bypass browser restrictions
+        const apiUrl = `${MYMEMORY_API_URL}?${params}`;
+        const proxiedUrl = `${CORS_PROXY}${encodeURIComponent(apiUrl)}`;
+
+        const response = await fetch(proxiedUrl, {
+            method: 'GET'
         });
 
         if (!response.ok) {
