@@ -56,6 +56,30 @@ const ZH_DICTIONARY = {
 export const mockTranslate = async (text, targetLang) => {
     return new Promise((resolve) => {
         setTimeout(() => {
+            // Handle Chinese Translation Mocking
+            if (targetLang === 'zh-CN') {
+                const words = text.toLowerCase().split(' ');
+                const translated = words.map(w => {
+                    const clean = w.replace(/[:.,?!]/g, '');
+                    const punctuation = w.slice(clean.length);
+
+                    // 1. Try direct lookup in ZH_DICTIONARY (if input is English)
+                    let zhTerm = ZH_DICTIONARY[clean];
+
+                    // 2. If not found, try looking up in MOCK_DICTIONARY to get English, then to Chinese
+                    if (!zhTerm) {
+                        const enTerm = MOCK_DICTIONARY[clean];
+                        if (enTerm) {
+                            zhTerm = ZH_DICTIONARY[enTerm];
+                        }
+                    }
+
+                    return (zhTerm || clean) + punctuation;
+                });
+                resolve(translated.join(' '));
+                return;
+            }
+
             const words = text.toLowerCase().split(' ');
             const translatedWords = words.map(word => {
                 // Strip punctuation

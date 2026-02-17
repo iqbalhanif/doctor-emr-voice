@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Languages, ArrowRightLeft, Volume2, Sparkles, Copy, Check } from 'lucide-react';
+import { Languages, ArrowRightLeft, Volume2, Sparkles, Copy, Check, Mic } from 'lucide-react';
 import { LANGUAGES, mockTranslate, speakText } from '../utils/translationUtils';
+import { useSpeechRecognition } from '../hooks/useSpeechRecognition';
 
 const Translator = () => {
     const [sourceLang, setSourceLang] = useState('ID');
@@ -130,8 +131,8 @@ const Translator = () => {
                             <button
                                 onClick={toggleListening}
                                 className={`group relative flex items-center justify-center w-20 h-20 rounded-full shadow-xl transition-all duration-300 transform hover:scale-110 ${isListening
-                                        ? 'bg-red-500 ring-4 ring-red-200'
-                                        : 'bg-medical-blue hover:bg-indigo-600'
+                                    ? 'bg-red-500 ring-4 ring-red-200'
+                                    : 'bg-medical-blue hover:bg-indigo-600'
                                     }`}
                             >
                                 {isListening ? (
