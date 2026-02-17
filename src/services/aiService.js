@@ -3,7 +3,7 @@
  * Handles communication with Google Gemini API
  */
 
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
+const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
 
 export const translateWithGemini = async (text, sourceLang, targetLang, apiKey) => {
     if (!apiKey) throw new Error("API Key is required");
