@@ -1,84 +1,55 @@
 /**
  * AI Service for Translation
- * Handles communication with Google Gemini API
+ * Uses MyMemory Translation API (Free, No API Key Required)
+ * API Docs: https://mymemory.translated.net/doc/spec.php
  */
 
-const BASE_URL = 'https://generativelanguage.googleapis.com/v1beta/models/';
+const MYMEMORY_API_URL = 'https://api.mymemory.translated.net/get';
 
-// List of models to try in order of preference (Newest/Fastest -> Legacy)
-const MODELS = [
-    'gemini-1.5-flash',
-    'gemini-1.5-flash-latest',
-    'gemini-1.5-pro',
-    'gemini-1.0-pro',
-    'gemini-pro'
-];
+// Language code mapping (MyMemory uses ISO 639-1 codes)
+const LANG_MAP = {
+    'Indonesia': 'id',
+    'English': 'en',
+    'Mandarin': 'zh-CN'
+};
 
-export const translateWithGemini = async (text, sourceLang, targetLang, apiKey) => {
-    if (!apiKey) throw new Error("API Key is required");
+export const translateWithMyMemory = async (text, sourceLang, targetLang) => {
+    if (!text || !text.trim()) throw new Error("Text is required");
 
-    const prompt = `
-    You are a professional medical translator. 
-    Translate the following text from ${sourceLang} to ${targetLang}.
-    
-    Rules:
-    1. Maintain professional medical terminology.
-    2. Output ONLY the translated text. No explanations, no markdown, no quotes.
-    3. If the input is Chinese, return Simplified Chinese.
-    4. If the input is not a complete sentence, translate it as a phrase.
+    const sourceLangCode = LANG_MAP[sourceLang] || 'id';
+    const targetLangCode = LANG_MAP[targetLang] || 'en';
 
-    Input Text:
-    "${text}"
-    `;
+    try {
+        const params = new URLSearchParams({
+            q: text,
+            langpair: `${sourceLangCode}|${targetLangCode}`
+        });
 
-    // Try models sequentially
-    let lastError = null;
-
-    for (const model of MODELS) {
-        try {
-            console.log(`Attempting translation with model: ${model}`);
-            const response = await fetch(`${BASE_URL}${model}:generateContent?key=${apiKey}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    contents: [{
-                        parts: [{
-                            text: prompt
-                        }]
-                    }]
-                })
-            });
-
-            if (!response.ok) {
-                const errData = await response.json();
-                // If it's a "Not Found" or "Not Supported" error, continue to next model
-                // Otherwise (e.g. Quota exceeded, Invalid Key), throw immediately
-                if (response.status === 404 || response.status === 400) {
-                    console.warn(`Model ${model} failed:`, errData.error?.message);
-                    lastError = new Error(errData.error?.message);
-                    continue;
-                }
-                throw new Error(errData.error?.message || 'Gemini API Error');
+        const response = await fetch(`${MYMEMORY_API_URL}?${params}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
             }
+        });
 
-            const data = await response.json();
-            const translatedText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-
-            if (!translatedText) throw new Error("No translation returned");
-
-            return translatedText.trim();
-
-        } catch (error) {
-            // Keep track of the error but continue if it's not a critical API failure 
-            // (Actually for network errors we might want to stop, but let's try next model just in case)
-            console.warn(`Error with ${model}:`, error);
-            lastError = error;
+        if (!response.ok) {
+            throw new Error(`MyMemory API Error: ${response.status}`);
         }
-    }
 
-    // If we get here, all models failed
-    console.error("All Gemini models failed.");
-    throw lastError || new Error("All AI models failed to respond.");
+        const data = await response.json();
+
+        if (data.responseStatus !== 200) {
+            throw new Error(data.responseDetails || 'Translation failed');
+        }
+
+        const translatedText = data.responseData?.translatedText;
+
+        if (!translatedText) throw new Error("No translation returned");
+
+        return translatedText.trim();
+
+    } catch (error) {
+        console.error("MyMemory Translation Failed:", error);
+        throw error;
+    }
 };
