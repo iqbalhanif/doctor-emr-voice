@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Languages, ArrowRightLeft, Volume2, Sparkles, Copy, Check, Mic } from 'lucide-react';
 import { LANGUAGES, mockTranslate, speakText } from '../utils/translationUtils';
 import { useSpeechRecognition } from '../hooks/useSpeechRecognition';
