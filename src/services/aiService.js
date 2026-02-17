@@ -1,20 +1,18 @@
 /**
  * AI Service for Translation
- * Uses MyMemory Translation API (Free, No API Key Required)
- * API Docs: https://mymemory.translated.net/doc/spec.php
+ * Uses Google Translate (Unofficial Free API)
  */
 
-const MYMEMORY_API_URL = 'https://api.mymemory.translated.net/get';
-const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
+const GOOGLE_TRANSLATE_API = 'https://translate.googleapis.com/translate_a/single';
 
-// Language code mapping (MyMemory uses ISO 639-1 codes)
+// Language code mapping (Google Translate uses ISO 639-1 codes)
 const LANG_MAP = {
     'Indonesia': 'id',
     'English': 'en',
     'Mandarin': 'zh-CN'
 };
 
-export const translateWithMyMemory = async (text, sourceLang, targetLang) => {
+export const translateWithGoogle = async (text, sourceLang, targetLang) => {
     if (!text || !text.trim()) throw new Error("Text is required");
 
     const sourceLangCode = LANG_MAP[sourceLang] || 'id';
@@ -22,36 +20,35 @@ export const translateWithMyMemory = async (text, sourceLang, targetLang) => {
 
     try {
         const params = new URLSearchParams({
-            q: text,
-            langpair: `${sourceLangCode}|${targetLangCode}`
+            client: 'gtx',
+            sl: sourceLangCode,
+            tl: targetLangCode,
+            dt: 't',
+            q: text
         });
 
-        // Use CORS proxy to bypass browser restrictions
-        const apiUrl = `${MYMEMORY_API_URL}?${params}`;
-        const proxiedUrl = `${CORS_PROXY}${encodeURIComponent(apiUrl)}`;
-
-        const response = await fetch(proxiedUrl, {
+        const response = await fetch(`${GOOGLE_TRANSLATE_API}?${params}`, {
             method: 'GET'
         });
 
         if (!response.ok) {
-            throw new Error(`MyMemory API Error: ${response.status}`);
+            throw new Error(`Google Translate Error: ${response.status}`);
         }
 
         const data = await response.json();
 
-        if (data.responseStatus !== 200) {
-            throw new Error(data.responseDetails || 'Translation failed');
+        // Google Translate returns nested arrays: [[["translated text", "original text"]]]
+        if (!data || !data[0] || !data[0][0] || !data[0][0][0]) {
+            throw new Error("No translation returned");
         }
 
-        const translatedText = data.responseData?.translatedText;
-
-        if (!translatedText) throw new Error("No translation returned");
+        // Combine all translation segments
+        const translatedText = data[0].map(item => item[0]).join('');
 
         return translatedText.trim();
 
     } catch (error) {
-        console.error("MyMemory Translation Failed:", error);
+        console.error("Google Translate Failed:", error);
         throw error;
     }
 };

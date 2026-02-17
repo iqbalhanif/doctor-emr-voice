@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Languages, ArrowRightLeft, Volume2, Sparkles, Copy, Check, Mic, Trash2, Settings } from 'lucide-react';
 import { LANGUAGES, mockTranslate, speakText } from '../utils/translationUtils';
 import { useSpeechRecognition } from '../hooks/useSpeechRecognition';
-import { translateWithMyMemory } from '../services/aiService';
+import { translateWithGoogle } from '../services/aiService';
 
 const Translator = () => {
     const [sourceLang, setSourceLang] = useState('ID');
@@ -42,8 +42,8 @@ const Translator = () => {
 
         setIsTranslating(true);
         try {
-            // Use MyMemory API (Free, No Key Required)
-            const result = await translateWithMyMemory(
+            // Use Google Translate (Free, No Key Required)
+            const result = await translateWithGoogle(
                 inputText,
                 LANGUAGES[sourceLang].name,
                 LANGUAGES[targetLang].name
@@ -90,7 +90,7 @@ const Translator = () => {
                     <div className="flex items-center gap-2 text-sm">
                         <span className="text-slate-500">Terjemahan suara instan.</span>
                         <span className="px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-bold text-xs flex items-center gap-1">
-                            <Sparkles size={10} /> MYMEMORY AI
+                            <Sparkles size={10} /> GOOGLE TRANSLATE
                         </span>
                     </div>
                 </div>
