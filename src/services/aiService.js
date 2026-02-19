@@ -6,23 +6,23 @@
 const GOOGLE_TRANSLATE_API = 'https://translate.googleapis.com/translate_a/single';
 
 // Language code mapping (Google Translate uses ISO 639-1 codes)
-const LANG_MAP = {
-    'Indonesia': 'id',
-    'English': 'en',
-    'Mandarin': 'zh-CN'
-};
+// const LANG_MAP = {
+//     'Indonesia': 'id',
+//     'English': 'en',
+//     'Mandarin': 'zh-CN'
+// };
 
 export const translateWithGoogle = async (text, sourceLang, targetLang) => {
     if (!text || !text.trim()) throw new Error("Text is required");
 
-    const sourceLangCode = LANG_MAP[sourceLang] || 'id';
-    const targetLangCode = LANG_MAP[targetLang] || 'en';
+    // const sourceLangCode = LANG_MAP[sourceLang] || 'id';
+    // const targetLangCode = LANG_MAP[targetLang] || 'en';
 
     try {
         const params = new URLSearchParams({
             client: 'gtx',
-            sl: sourceLangCode,
-            tl: targetLangCode,
+            sl: sourceLang,
+            tl: targetLang,
             dt: 't',
             q: text
         });

@@ -1,7 +1,7 @@
 export const LANGUAGES = {
-    ID: { code: 'id-ID', name: 'Indonesia', flag: '🇮🇩' },
-    EN: { code: 'en-US', name: 'English', flag: '🇺🇸' },
-    ZH: { code: 'zh-CN', name: 'Mandarin', flag: '🇨🇳' }
+    ID: { code: 'id-ID', googleCode: 'id', name: 'Indonesia', flag: '🇮🇩' },
+    EN: { code: 'en-US', googleCode: 'en', name: 'English', flag: '🇺🇸' },
+    ZH: { code: 'zh-CN', googleCode: 'zh-CN', name: 'Mandarin', flag: '🇨🇳' }
 };
 
 // Mock Translation Database

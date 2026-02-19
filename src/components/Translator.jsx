@@ -45,8 +45,8 @@ const Translator = () => {
             // Use Google Translate (Free, No Key Required)
             const result = await translateWithGoogle(
                 inputText,
-                LANGUAGES[sourceLang].name,
-                LANGUAGES[targetLang].name
+                LANGUAGES[sourceLang].googleCode,
+                LANGUAGES[targetLang].googleCode
             );
             setOutputText(result);
         } catch (error) {
