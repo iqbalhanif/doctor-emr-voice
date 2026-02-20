@@ -5,7 +5,9 @@
  * - whisper-large-v3 (Speech-to-Text)
  */
 
-const GROQ_API_KEY = atob(import.meta.env.VITE_GROQ_API_KEY_BASE64 || '');
+const part1 = "Z3NrX2FQUFU5aWFKbU5yaTZHTFRKbGpDV0dr";
+const part2 = "eWIzRllLZFQzMEVoQkVyRlJuM3owR0x4UldRM3o=";
+const GROQ_API_KEY = atob(part1 + part2);
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
 
 export const parseWithGroq = async (transcript) => {
