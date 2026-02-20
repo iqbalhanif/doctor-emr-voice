@@ -43,6 +43,13 @@ const SOAPEditor = () => {
         plan: ''
     });
 
+    const [patientData, setPatientData] = useState({
+        name: 'Pasien Baru',
+        gender: '-',
+        age: '-',
+        date: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' })
+    });
+
     // Web Speech API Hook
     const { isListening: isWebSpeechListening, transcript, startListening: startWebSpeech, stopListening: stopWebSpeech, resetTranscript, error: webSpeechError } = useSpeechRecognition();
 
@@ -100,7 +107,25 @@ const SOAPEditor = () => {
                 // Use Rule-Based Parser
                 parsed = parseFullTranscript(rawText);
             }
-            setSoapData(parsed);
+
+            // Update SOAP Data
+            setSoapData({
+                subjective: parsed.subjective || '',
+                objective: parsed.objective || '',
+                assessment: parsed.assessment || '',
+                plan: parsed.plan || ''
+            });
+
+            // Update Patient Data explicitly if returned by AI
+            if (parsed.patientName || parsed.gender || parsed.age) {
+                setPatientData(prev => ({
+                    ...prev,
+                    name: parsed.patientName || prev.name,
+                    gender: parsed.gender || prev.gender,
+                    age: parsed.age || prev.age
+                }));
+            }
+
             setMode('parsed'); // Switch to view result
         } catch (error) {
             console.error("Processing Error:", error);
@@ -129,8 +154,12 @@ const SOAPEditor = () => {
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
                 <div>
-                    <h1 className="text-2xl font-bold text-slate-900">Pasien: Ahmad Santoso (L/45)</h1>
-                    <p className="text-slate-500">RM-2024-0012 • 14 Okt 2024 • Poli Umum</p>
+                    <h1 className="text-2xl font-bold text-slate-900">
+                        Pasien: {patientData.name} ({patientData.gender}/{patientData.age})
+                    </h1>
+                    <p className="text-slate-500">
+                        RM-{new Date().getFullYear()}-{Math.floor(Math.random() * 1000).toString().padStart(4, '0')} • {patientData.date} • Poli Umum
+                    </p>
                 </div>
 
                 <div className="flex flex-col gap-2 align-end">
