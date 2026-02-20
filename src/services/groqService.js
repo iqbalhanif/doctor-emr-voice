@@ -5,7 +5,7 @@
  * - whisper-large-v3 (Speech-to-Text)
  */
 
-const part1 = "Z3NrX2FQUFU5aWFKbU5yaTZHTFRKbGpDV0dr";
+const part1 = "Z3NrX2FQUFU5aWFKbU5yaTZHTFRKbGpDV0dk";
 const part2 = "eWIzRllLZFQzMEVoQkVyRlJuM3owR0x4UldRM3o=";
 const GROQ_API_KEY = atob(part1 + part2);
 const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
@@ -20,13 +20,29 @@ You are an expert medical scribe assistant. Your task is to extract and structur
 
 Rx Rules:
 1. Output MUST be valid JSON only. No markdown, no intro/outro text.
-2. Structure: { "subjective": "...", "objective": "...", "assessment": "...", "plan": "..." }
-3. If a section is missing, use an empty string.
+2. Structure: { 
+    "patientName": "Name or 'Pasien'", 
+    "gender": "L/P or '-'", 
+    "age": "25 Tahun or '-'", 
+    "subjective": "...", 
+    "objective": "...", 
+    "assessment": "...", 
+    "plan": "..." 
+}
+3. If a section is missing, use an empty string or default value.
 4. Clean up the text: remove filler words (e.g., "uh", "anu", "kayaknya"), fix grammar, and make it professional.
 5. Language: Maintain the original language (Indonesian) but use standard medical terminology where appropriate.
 
-Example Input: "Pasien datang mengeluh sakit kepala sejak 2 hari lalu. Tensi 120/80. Diagnosa tension headache. Kasih paracetamol 3x1."
-Example Output: { "subjective": "Pasien mengeluh sakit kepala sejak 2 hari yang lalu.", "objective": "Tekanan darah 120/80 mmHg.", "assessment": "Tension Headache", "plan": "Paracetamol 3x1 tablet." }
+Example Input: "Pasien Bapak Supriyadi umur 55 tahun mengeluh nyeri dada. Tensi 120/80. Diagnosa angina. Kasih ISDN kalo nyeri."
+Example Output: { 
+    "patientName": "Tn. Supriyadi", 
+    "gender": "L", 
+    "age": "55 Tahun", 
+    "subjective": "Pasien mengeluh nyeri dada.", 
+    "objective": "Tekanan darah 120/80 mmHg.", 
+    "assessment": "Angina Pectoris", 
+    "plan": "Isosorbide Dinitrate (ISDN) jika nyeri." 
+}
 `;
 
     try {
