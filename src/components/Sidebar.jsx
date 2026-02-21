@@ -14,7 +14,7 @@ const Sidebar = ({ activeTab, onTabChange }) => {
             <nav className="flex-1 py-6 px-3 space-y-2">
                 <NavItem
                     icon={<FileText />}
-                    label="Rekam Medis"
+                    label="Medical Record"
                     active={activeTab === 'emr'}
                     onClick={() => onTabChange('emr')}
                 />
@@ -24,8 +24,8 @@ const Sidebar = ({ activeTab, onTabChange }) => {
                     active={activeTab === 'translator'}
                     onClick={() => onTabChange('translator')}
                 />
-                <NavItem icon={<User />} label="Pasien" />
-                <NavItem icon={<Settings />} label="Pengaturan" />
+                <NavItem icon={<User />} label="Patients" />
+                <NavItem icon={<Settings />} label="Settings" />
             </nav>
 
             <div className="p-4 border-t border-slate-700">
